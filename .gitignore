@@ -1,0 +1,3 @@
+.idea
+./producer/target/
+./worker/target/
