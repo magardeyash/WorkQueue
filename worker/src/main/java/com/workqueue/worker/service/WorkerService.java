@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -53,16 +54,27 @@ public class WorkerService {
 
     @PreDestroy
     public void stopWorkers() {
+        log.info("Stopping worker threads...");
         running = false;
         if (executor != null) {
-            executor.shutdownNow();
+            executor.shutdown();
+            try {
+                // Wait up to 10 seconds for threads to finish naturally
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    executor.shutdownNow(); // force stop if still running
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
+        log.info("Worker threads stopped.");
     }
 
     private void runWorkerLoop() {
         while (running && !Thread.currentThread().isInterrupted()) {
             try {
-                // Blocking pop with a 2-second timeout to allow clean thread shutdown
+                // Short timeout so threads can check 'running' flag frequently
                 String jsonTask = redisTemplate.opsForList().leftPop(QUEUE_KEY, Duration.ofSeconds(2));
 
                 if (jsonTask != null) {
@@ -88,7 +100,8 @@ public class WorkerService {
                     }
                 }
             } catch (Exception e) {
-                if (Thread.currentThread().isInterrupted()) {
+                // If running is false, this is expected during shutdown — just exit
+                if (!running || Thread.currentThread().isInterrupted()) {
                     break;
                 }
                 log.error("Error in worker loop: {}", e.getMessage());
