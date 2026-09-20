@@ -57,7 +57,7 @@ public class Task {
 
 The response will look like this:
 
-<!-- Add producer response screenshot here -->
+![Producer response](image-1.png)
 
 ### 2. Worker
 
@@ -70,7 +70,7 @@ Send an HTTP GET request to `http://localhost:8081/metrics`
 
 This will give a response like this:
 
-<!-- Add worker metrics screenshot here -->
+![Worker metrics](image.png)
 
 - **totalJobsInQueue** - Number of jobs inside the Redis queue at that moment
 - **jobsDone** - Total number of jobs executed so far
@@ -119,30 +119,7 @@ public void processTask(Task task) throws Exception {
 
 Example:
 
-<!-- Add logs screenshot here -->
-
-## How to Run
-
-### Using Docker Compose (Recommended)
-```bash
-docker-compose up --build
-```
-
-### Running Locally
-1. Start Redis:
-   ```bash
-   docker run -d -p 6379:6379 redis:7-alpine
-   ```
-2. Start Producer (Port 8080):
-   ```bash
-   cd producer
-   mvn spring-boot:run
-   ```
-3. Start Worker (Port 8081):
-   ```bash
-   cd worker
-   mvn spring-boot:run
-   ```
+![Logging example](image-2.png)
 
 ---
 
