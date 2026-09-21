@@ -25,7 +25,7 @@ Provides a `/enqueue` route to add your jobs/tasks.
 
 #### How to add a job?
 
-- Send an HTTP POST request to the exposed `/enqueue` route on this URL: [workqueue-producer](https://workqueue-producer-6r79.onrender.com/enqueue)
+- Send an HTTP POST request to the exposed `/enqueue` route on this URL: [workqueue-producer](https://workqueue-producer-6r79.onrender.com/swagger-ui.html)
 - It accepts a task in this format (JSON):
 
 **Example: An inbuilt task the system supports is sending an email. Its JSON request would look like this:**
@@ -66,7 +66,7 @@ The response will look like this:
 
 #### How to view the status of your job?
 
-Send an HTTP GET request to [worker-url](https://workqueue-worker-u3eq.onrender.com/metrics)
+Send an HTTP GET request to [worker-url](https://workqueue-worker-u3eq.onrender.com/swagger-ui.html)
 
 This will give a response like this:
 
